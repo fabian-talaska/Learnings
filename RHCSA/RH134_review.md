@@ -8,12 +8,14 @@ servera.lab.example.com:/share /local-share nfs rw,sync 0 0
 ```
 
 ### Create a group and 4 new users. Add group to all users.
+
 ```
 groupadd production
-for 1 in $(seq 1 4); do usermod -aG production production$i; done 
+for 1 in $(seq 1 4); do usermod -aG production production$i; done
 ```
 
 ### Store tmp files in /run/volatile. Time based cleanup if not accessed for +30min. Octal permissions 0700.
+
 ```
 vim /etc/tmpfiles.d/volatile.conf
 d /run/volatile 0700 root root 30s
@@ -22,7 +24,8 @@ systemd-tmpfiles --create /etc/tmpfiles.d/volatile.conf
 
 # Lab rhcsa-compreview3:
 
-### Automatic folder mapping to remote home folder + SELinux allow 
+### Automatic folder mapping to remote home folder + SELinux allow
+
 ```
 yum install autofs
 vim /etc/auto.master.d/production5.autofs
@@ -36,6 +39,7 @@ setsebool use_nfs_home_dirs on
 ```
 
 ### Fix Apache not starting (custom port 30080)
+
 ```
 systemctl status httpd.service
 grep sealert /var/log/messages
@@ -47,7 +51,28 @@ firewall-cmd --reload
 ```
 
 ### Configure firewall to reject ssh connections from servera(=172.25.250.10/32)
+
 ```
 firewall-cmd --add-source=172.25.250.10/32 --zone=block --permanent
 firewall-cmd --reload
+```
+
+# Lab rhcsa-compreview4
+
+### Configure systemd to automatically start container and map port 8888
+
+Logout and ssh again with user!!!
+
+```
+exit
+ssh containers@serverb
+mkdir -p .config/systemd/user
+podman generate systemd --name web --files --new
+podman stop -a
+podman rm -a
+systemctl --user daemon-reload
+systemctl --user enable --now container-web.service
+loginctl enable-linger
+sudo firewall-cmd --add-port=8888/tcp --permanent
+sudo firewall-cmd --reload
 ```
