@@ -1,3 +1,56 @@
+# Lab files-review
+
+### 8. Create multiple folders with one command
+
+```
+mkdir -p Documents/my_bestseller/{editor,changes,vacation}
+```
+
+### 14. Use square-bracket pattern matching to specify which chapter numbers to match in the filename argument
+
+The authors of chapters 5 and 6 want to experiment with possible changes. Copy both files from the ~/Documents/my_bestseller/chapters directory to the ~/Documents/my_bestseller/changes directory to prevent these changes from modifying original files. Navigate to the ~/Documents/my_bestseller directory. Use square-bracket pattern RH124-RHEL8.2-en-1-20200928Chapter 3 | Managing Files From the Command Line matching to specify which chapter numbers to match in the filename argument of the cp command.
+
+```
+cp chapters/mystery_chapter[56].odf changes
+```
+
+# Lab help-review start
+
+### 1. Determine how to prepare a man page for printing. Specifically, find what format or rendering language is used for printing.
+
+```
+man man
+man -t
+
+```
+
+### 3. Using man, learn the commands used for viewing and printing PostScript files.
+
+```
+man -k postscript viewer
+```
+
+### 4. Learn how to use the evince(1) viewer in preview mode. Also, determine how to open a document starting on a specific page.
+
+```
+evince -w
+evince -i 3 passwd.ps
+```
+
+# LOOK AT PINFO!
+
+### 7. Using pinfo, look for GNU Info documentation about the evince viewer.
+
+```
+pinfo evince
+```
+
+### 8. Using Firefox, open the system's package documentation directory and browse into the man-db package subdirectory. View the provided manuals.
+
+```
+firefox /usr/share/doc
+```
+
 # Lab rhcsa-rh124-review1:
 
 ### Create multiple files with different endings
