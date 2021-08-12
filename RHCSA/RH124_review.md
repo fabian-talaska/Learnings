@@ -51,6 +51,91 @@ pinfo evince
 firefox /usr/share/doc
 ```
 
+# Lab users-review start
+
+### 2. ensure that newly created users have passwords that must be changed every 30 days.
+
+```
+sudo vim /etc/login.defs
+PASS_MAX_DAYS 30
+```
+
+### 4. Configure administrative rights for all members of consultants to be able to execute any command as any user.
+
+```
+sudo vim /etc/sudoers.d/consultants
+%consultants ALL=(ALL) ALL
+```
+
+### 6. Set the consultant1, consultant2, and consultant3 accounts to expire in 90 days from the current day.
+
+```
+for i in $(seq 1 3); do sudo chage -E $(date -d "+90 days" +%F) consultant${i}; done
+```
+
+### 7. Change the password policy for the consultant2 account to require a new password every 15 days.
+
+```
+sudo chage -M 15 consultant2
+```
+
+### 8. Additionally, force the consultant1, consultant2, and consultant3 users to change their passwords on the first login.
+
+```
+for i in $(seq 1 3); do sudo chage -d 0 consultant${1}; done
+```
+
+# Lab perms-review
+
+### 8. Modify the global login scripts. Normal users should have a umask setting that prevents others from viewing or modifying new files and directories.
+
+```
+sudo vim /etc/profile.d/local-umask.sh
+
+# Overrides default umask configuration
+if [ $UID -gt 199 ] && [ "`id -gn`" = "`id -un`" ]; then
+    umask 007
+else
+    umask 022
+fi
+```
+
+# Lab processes-review
+
+### 5. in "top" turn off bold and save config for reuse
+
+```
+top
+SHIFT + B
+SHIFT + W
+```
+
+### 9. Suspend the process 101. List remaining jobs.
+
+```
+ps -elf | grep process
+kill -SIGSTOP 3512
+jobs -l
+```
+
+# Lab ssh-review
+
+### 5. Confirm that production1 can successfully log in to serverb using the SSH keys
+
+```
+ssh-keygen
+ssh-copy-id production1@serverb
+ssh production1@serverb
+```
+
+# Lab log-review
+
+### 3. Display the log events recorded in the previous 30 min
+
+```
+journalctl --since $(date -d "-30 min" +%T)
+```
+
 # Lab rhcsa-rh124-review1:
 
 ### Create multiple files with different endings
