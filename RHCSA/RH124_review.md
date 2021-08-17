@@ -92,7 +92,7 @@ for i in $(seq 1 3); do sudo chage -d 0 consultant${1}; done
 ```
 sudo vim /etc/profile.d/local-umask.sh
 
-# Overrides default umask configuration
+#!/bin/bash
 if [ $UID -gt 199 ] && [ "`id -gn`" = "`id -un`" ]; then
     umask 007
 else
@@ -134,6 +134,44 @@ ssh production1@serverb
 
 ```
 journalctl --since $(date -d "-30 min" +%T)
+```
+
+# Lab net-review:
+
+### Create a new connection with a static network connection using the settings in the table.
+
+```
+nmcli connection add ....... ipv4.method manual type ethernet
+```
+
+# Lab software-review:
+
+### 2. Install the Apache HTTP Server module from the 2.4 stream and the common profile
+
+```
+yum module install httpd:2.4/common
+```
+
+### 4. Confirm that the package rhcsa-script-1.0.0-1.noarch.rpm is available on serverb. Install the package.
+
+```
+rpm -q -p rhcsa-script-1.0.0-1.noarch.rpm -i
+sudo yum localinstall rhcsa-script-1.0.0-1.noarch.rpm
+```
+
+# Lab fs-review:
+
+### 1. Generate a disk usage report of the /usr/share
+
+```
+du /usr/share
+```
+
+### 2. Use the locate command to find all rsyslog.conf
+
+```
+updatedb
+locate rsyslog.conf
 ```
 
 # Lab rhcsa-rh124-review1:
@@ -178,6 +216,20 @@ chage -m 10 dbuser1
 chage -M 30 dbuser1
 ```
 
+### Configure the user dbuser1 to use sudo to run any command as the superuser
+
+```
+sudo vim /etc/sudoers.d/dbuser1
+
+dbuser1 ALL=(ALL) ALL
+```
+
+OR
+
+```
+sudo usermod -aG wheel dbuser1
+```
+
 ### User default umask 007
 
 ```
@@ -185,6 +237,19 @@ su - dbuser1
 cd
 echo "umask 007" >> .bash_profile
 echo "umask 007" >> .bashrc
+```
+
+OR
+
+```
+sudo vim /etc/profile.d/dbuser1-default-umask.sh
+
+#!/bin/bash
+if [ $UID -gt 1003 ] && [ "`id -gn`" = "`id -un`" ]; then
+    umask 007
+else
+    umask 022
+fi
 ```
 
 ### user + group access and create permissions for folder. Others only read + execute
