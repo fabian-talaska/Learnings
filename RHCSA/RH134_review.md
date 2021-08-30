@@ -1,4 +1,28 @@
-# Lab rhcsa-compreview2:
+# lab console-review
+
+### Loop with 2 server names
+
+```
+for SERVER in servera serverb; do
+ssh $SERVER hostname > /home/student/myFile.txt;
+done
+```
+
+# lab acl-review
+
+### Use setfacl to recursively update the existing cases directory and its contents. Grant the contractors group read, write, and conditional execute permissions.
+
+```
+setfacl -Rm g:contractors:rwX /shares/cases
+```
+
+### Use setfacl to recursively update the existing cases directory and its contents. Grant the contractor3 user read and conditional execute permissions.
+
+```
+setfacl -Rm u:contractor3:rX /shares/cases
+```
+
+# Lab rhcsa-compreview2
 
 ### Mount network filesystem persistently to /local-share
 
