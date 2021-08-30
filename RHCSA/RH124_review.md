@@ -20,7 +20,7 @@ cp chapters/mystery_chapter[56].odf changes
 
 ```
 man man
-man -t
+man -t <page>
 
 ```
 
