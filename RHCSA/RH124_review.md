@@ -21,7 +21,6 @@ cp chapters/mystery_chapter[56].odf changes
 ```
 man man
 man -t <page>
-
 ```
 
 ### 3. Using man, learn the commands used for viewing and printing PostScript files.
