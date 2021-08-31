@@ -3,12 +3,13 @@
 ### Loop with 2 server names
 
 ```
-for SERVER in servera serverb; do
-ssh $SERVER hostname > /home/student/myFile.txt;
+for SERVER in servera serverb
+do
+ssh $SERVER hostname > /home/student/myFile.txt
 done
 ```
 
-# lab acl-review
+# Lab acl-review
 
 ### Use setfacl to recursively update the existing cases directory and its contents. Grant the contractors group read, write, and conditional execute permissions.
 
@@ -20,6 +21,34 @@ setfacl -Rm g:contractors:rwX /shares/cases
 
 ```
 setfacl -Rm u:contractor3:rX /shares/cases
+```
+
+# Lab selinux-review
+
+### Launch a web browser on workstation and browse to http://serverb/lab.html. You will see the error message: You do not have permission to access /lab.html on this server.
+
+```
+sudo grep sealert /var/log/messages
+sealert -l a55b...
+ls -dZ /lab-content /var/www/html
+sudo semanage fcontext -a -t httpd_sys_content_t /lab-content
+sudo semanage fcontext -a -t httpd_sys_content_t /lab-content/lab.html
+sudo restorecon -R -v /lab-content
+```
+
+# Lab storage-review
+
+### Set the swap space on the swap2 partition to be preferred over the other.
+
+```
+sudo vim /etc/fstab
+
+UUID=... swap swap pri=10 0 0
+UUID=... swap swap pri=20 0 0
+
+sudo systemctl daemon-reload
+sudo swapon -a
+sudo swapon --show
 ```
 
 # Lab rhcsa-compreview2

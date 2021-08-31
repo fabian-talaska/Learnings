@@ -36,8 +36,6 @@ evince -w
 evince -i 3 passwd.ps
 ```
 
-# LOOK AT PINFO!
-
 ### 7. Using pinfo, look for GNU Info documentation about the evince viewer.
 
 ```
