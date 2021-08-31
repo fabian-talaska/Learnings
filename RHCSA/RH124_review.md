@@ -198,7 +198,7 @@ ln -s TARGET LINK_NAME
 ### Configure force password change
 
 ```
-chage -p 0 dbuser1
+chage -d 0 dbuser1
 ```
 
 ### Change password after 10 days since last change
