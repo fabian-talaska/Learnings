@@ -51,6 +51,15 @@ sudo swapon -a
 sudo swapon --show
 ```
 
+# Lab lvm-review
+
+### Extend vg
+
+```
+pvcreate /dev/vdb2
+vgextend serverb_01_vg /dev/vdb2
+```
+
 # Lab rhcsa-compreview2
 
 ### Mount network filesystem persistently to /local-share
