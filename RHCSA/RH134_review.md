@@ -60,6 +60,51 @@ pvcreate /dev/vdb2
 vgextend serverb_01_vg /dev/vdb2
 ```
 
+# Lab advstorage-review
+
+### Persistently add stratis filesystem on boot. Don't forget x-systemd.requires=stratisd.service
+
+```
+sudo yum install stratisd stratis-cli
+sudo systemctl start stratisd.service
+stratis pool create labpool /dev/vdb
+stratis pool add-data labpool /dev/vdc
+stratis filesystem create labpool labfs
+stratis filesystem list
+sudo vim /etc/fstab
+
+UUID="..." /labstratisvol xfs defaults,x-systemd.requires=stratisd.service 0 0
+```
+
+### Create a file of 2GiB size on the new filesystem
+
+```
+dd if=/dev/urandom of=/labstratisvol/labfile2 bs=1M count=2048
+```
+
+### Create a snapshot and recover a file
+
+```
+stratis filesystem snapshot labpool labfs labfs-snap
+rm /labstratisvol/labfile1
+mkdir /labstratisvol-snap
+sudo mount /stratis/labpool/labfs-snap /labstratisvol-snap
+cp /labstratisvol-snap/labfile1 /labstratisvol/
+```
+
+### Create a VDO volume with the name labvdo using device /dev/vdd of logical size 50 GB
+
+```
+vdo create --name=labvdo --device=/dev/vdd --vdoLogicalSize=50G
+mkfs.xfs /dev/mapper/labvdo
+lsblk --fs
+sudo vim /etc/fstab
+
+UUID=... /labvdovol xfs defaults,x-systemd.requires=vdo.service 0 0
+
+sudo systemctl daemon-reload
+```
+
 # Lab rhcsa-compreview2
 
 ### Mount network filesystem persistently to /local-share
