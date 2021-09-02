@@ -105,6 +105,74 @@ UUID=... /labvdovol xfs defaults,x-systemd.requires=vdo.service 0 0
 sudo systemctl daemon-reload
 ```
 
+# Lab netstorage-review
+
+### Configure an automounter indirect map on servera using shares from serverb. Create an indirect map using files named /etc/auto.master.d/shares.autofs for the master map and /etc/auto.shares for the mapping file
+
+```
+sudo yum install autofs
+sudo vim /etc/auto.master.d/shares.autofs
+
+/remote /etc/auto.shares
+
+sudo vim /etc/auto.shares
+
+* -rw,sync,fstype=nfs4 serverb:/shares/&
+
+sudo systemctl enable --now autofs
+```
+
+# Lab boot-review
+
+### Reset the root password to redhat.
+
+Press CTRL+ALT+ESC and then "e" to modify the boot. Add the following at the end of the 4th line.
+
+```
+rd.break
+```
+
+Then press CTRL+X to continue. Perform the following steps and then continue with the boot
+
+```
+mount -o remount,rw /sysroot
+chroot /sysroot
+passwd root
+redhat
+redhat
+touch /.autorelabel
+exit
+exit
+```
+
+### Reset the root password to redhat.
+
+Press CTRL+ALT+ESC and then "e" to modify the boot. Add the following at the end of the 4th line.
+
+```
+systemd.unit=emergency.target
+```
+
+Then press CTRL+X to continue. Perform the following steps and then continue with the boot
+
+```
+mount -o remount,rw /
+mount -a
+vim /etc/fstab
+
+# comment out failing line
+
+systemctl daemon-reload
+mount -a
+reboot
+```
+
+### Change the default systemd target to start a GUI
+
+```
+systemctl set-default graphical.target
+```
+
 # Lab rhcsa-compreview2
 
 ### Mount network filesystem persistently to /local-share
