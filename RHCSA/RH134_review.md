@@ -173,6 +173,79 @@ reboot
 systemctl set-default graphical.target
 ```
 
+# Lab netsecurity-review
+
+### Configure SELinux to allow the httpd service to listen on port 1001/TCP
+
+```
+sudo semanage port -l | grep http
+sudo semanage port -a -t http_port_t -p tcp 1001
+```
+
+### Determine whether the correct ports are assigned to the firewall
+
+```
+sudo firewall-cmd --get-default-zone
+sudo firewall-cmd --zone=public --list-all
+sudo firewall-cmd --add-port=1001/tcp
+sudo firewall-cmd --reload
+sudo systemctl start httpd.service
+```
+
+# Lab installing-review
+
+### Make the /home/student/kickstart.cfg file available at http://serverb.lab.example.com/ks-config/kickstart.cfg
+
+```
+ksvalidator /home/student/kickstart.cfg
+sudo semanage port -a -t http_port_t -p tcp 1001
+
+chmod 644 /home/student/kickstart.cfg
+sudo cp /home/student/kickstart.cfg /var/www/html/ks-config/
+```
+
+# Lab containers-review
+
+### Install the container tools
+
+```
+sudo yum module install container-tools
+
+```
+
+### Get latest tag of mariadb image on registry.lab.example.com. Use user podsvc on serverb
+
+```
+su - podsvc
+podman login registry.lab.example.com
+admin
+redhat321
+skopeo inspect docker://registry.lab.example.com/rhel8/mariadb-103
+```
+
+### Create a detached MariaDB container
+
+named inventorydb. Use the rhel8/mariadb-103 image. Map port 3306 in the container to port 13306 on the host. Mount the /home/podsvc/db_data directory on the host as /var/lib/mysql/data in the container. Declare env variables
+
+**use the :Z when mounting volumes**
+
+```
+podman run -d --name inventorydb -p 13306:3306 -v /home/podsvc/db_data:/var/lib/mysql/data:Z -e MYSQL_USER=operator1 -e MYSQL_PASSWORD=redhat -e MYSQL_DATABASE=inventory -e MYSQL_ROOT_PASSWORD=redhat registry.lab.example.com/rhel8/mariadb-103:1-86
+```
+
+### On serverb, as the podsvc user, configure systemd so that the inventorydb container starts automatically with the server.
+
+```
+mkdir -p ~/.config/systemd/user/
+cd ~/.config/systemd/user/
+podman generate systemd -n inventorydb -f --new
+podman stop inventorydb
+podman rm inventorydb
+systemctl --user daemon-reload
+systemctl --user podsvc enable --now container-inventorydb.service
+loginctl enable-linger
+```
+
 # Lab rhcsa-compreview2
 
 ### Mount network filesystem persistently to /local-share
