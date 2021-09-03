@@ -250,6 +250,8 @@ loginctl enable-linger
 
 ### Mount network filesystem persistently to /local-share
 
+**options rw,sync**
+
 ```
 vim /etc/fstab
 servera.lab.example.com:/share /local-share nfs rw,sync 0 0
@@ -259,12 +261,13 @@ servera.lab.example.com:/share /local-share nfs rw,sync 0 0
 
 ```
 groupadd production
-for 1 in $(seq 1 4); do usermod -aG production production$i; done
+for 1 in $(seq 1 4); do useradd -G production production${i}; done
 ```
 
 ### Store tmp files in /run/volatile. Time based cleanup if not accessed for +30min. Octal permissions 0700.
 
 ```
+man tmpfiles.d
 vim /etc/tmpfiles.d/volatile.conf
 d /run/volatile 0700 root root 30s
 systemd-tmpfiles --create /etc/tmpfiles.d/volatile.conf
@@ -286,6 +289,13 @@ getsebool -a | grep home
 setsebool use_nfs_home_dirs on
 ```
 
+### Configure firewall to reject ssh connections from servera(=172.25.250.10/32)
+
+```
+firewall-cmd --add-source=172.25.250.10/32 --zone=block --permanent
+firewall-cmd --reload
+```
+
 ### Fix Apache not starting (custom port 30080)
 
 ```
@@ -298,14 +308,15 @@ firewall-cmd --add-port=30080/tcp --permanent
 firewall-cmd --reload
 ```
 
-### Configure firewall to reject ssh connections from servera(=172.25.250.10/32)
-
-```
-firewall-cmd --add-source=172.25.250.10/32 --zone=block --permanent
-firewall-cmd --reload
-```
-
 # Lab rhcsa-compreview4
+
+### Mount volume in container
+
+**use the :Z at the end** such that Podman automatically applies the SELinux container_file_t context type to the host directory
+
+```
+podman run -d --name web -v /srv/web:/var/www:Z ...
+```
 
 ### Configure systemd to automatically start container and map port 8888
 
