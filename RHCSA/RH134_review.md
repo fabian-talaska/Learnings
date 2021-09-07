@@ -43,8 +43,8 @@ sudo restorecon -R -v /lab-content
 ```
 sudo vim /etc/fstab
 
-UUID=... swap swap pri=10 0 0
 UUID=... swap swap pri=20 0 0
+UUID=... swap swap pri=10 0 0
 
 sudo systemctl daemon-reload
 sudo swapon -a
@@ -70,10 +70,10 @@ sudo systemctl start stratisd.service
 stratis pool create labpool /dev/vdb
 stratis pool add-data labpool /dev/vdc
 stratis filesystem create labpool labfs
-stratis filesystem list
+lsblk --output=UUID /stratis/labpool/labfs
 sudo vim /etc/fstab
 
-UUID="..." /labstratisvol xfs defaults,x-systemd.requires=stratisd.service 0 0
+UUID=... /labstratisvol xfs defaults,x-systemd.requires=stratisd.service 0 0
 ```
 
 ### Create a file of 2GiB size on the new filesystem
