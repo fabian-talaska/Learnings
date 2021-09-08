@@ -187,7 +187,7 @@ sudo semanage port -a -t http_port_t -p tcp 1001
 ```
 sudo firewall-cmd --get-default-zone
 sudo firewall-cmd --zone=public --list-all
-sudo firewall-cmd --add-port=1001/tcp
+sudo firewall-cmd --add-port=1001/tcp --permanent
 sudo firewall-cmd --reload
 sudo systemctl start httpd.service
 ```
