@@ -60,6 +60,18 @@ pvcreate /dev/vdb2
 vgextend serverb_01_vg /dev/vdb2
 ```
 
+### Extend lv
+
+Don't forget the **-r** option to resize the file system!
+
+```
+parted -s /dev/vdb mkpart primary xxx xxx
+parted -s /dev/vdb set 2 lvm on
+pvcreate /dev/vdb2
+vgextend serverb_01_vg /dev/vdb2
+lvextend -L +100M -r /dev/serverb_01_vg/lv_01
+```
+
 # Lab advstorage-review
 
 ### Persistently add stratis filesystem on boot. Don't forget x-systemd.requires=stratisd.service
