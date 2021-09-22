@@ -247,6 +247,8 @@ if [ $UID -gt 1003 ] && [ "`id -gn`" = "`id -un`" ]; then
 else
     umask 022
 fi
+
+sudo chmod a+x /etc/profile.d/dbuser1-default-umask.sh
 ```
 
 ### user + group access and create permissions for folder. Others only read + execute
